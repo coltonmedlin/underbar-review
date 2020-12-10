@@ -250,8 +250,9 @@
       });
 
       it('should return all odd numbers in an array', function() {
+        var numbers = [1, 2, 3, 4, 5, 6];
         var isOdd = function(num) { return num % 2 !== 0; };
-        var odds = FILL_ME_IN;
+        var odds = _.filter(numbers, isOdd);
 
         expect(odds).to.eql([1, 3, 5]);
       });
