@@ -223,7 +223,23 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    // TIP: Try re-using reduce() here
+
+    return _.reduce(collection, function(memo, item) {
+      if (iterator === undefined) {
+        return Boolean(item);
+      }
+
+      if (!iterator(item)) {
+        return false;
+      }
+    }, true);
+
+    // taking in collection -- iterator is truth test
+    // pass collection, a function we write and a starting value -- C gut is send true, K gut... maybe leave empty
+    // function we pass in should return iter(item)
+
+
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
