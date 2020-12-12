@@ -235,10 +235,6 @@
       }
     }, true);
 
-    // taking in collection -- iterator is truth test
-    // pass collection, a function we write and a starting value -- C gut is send true, K gut... maybe leave empty
-    // function we pass in should return iter(item)
-
 
   };
 
@@ -246,6 +242,25 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    if (collection.length === 0) {
+      return false;
+    }
+
+    let result = false;
+
+    _.each(collection, function(item) {
+      if (iterator === undefined) {
+        if (Boolean(item)) {
+          result = true;
+        }
+      } else {
+        if (iterator(item)) {
+          result = true;
+        }
+      }
+    });
+
+    return result;
   };
 
 
