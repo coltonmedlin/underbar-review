@@ -408,6 +408,23 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+
+    const generateRandomInt = function(max) {
+      return Math.floor(Math.random() * max);
+    };
+
+    var results = [];
+    var usedIndexes = [];
+
+    while (usedIndexes.length < array.length) {
+      let x = generateRandomInt(array.length);
+      if (!usedIndexes.includes(x)) {
+        results.push(array[x]);
+        usedIndexes.push(x);
+      }
+    }
+    return results;
+
   };
 
 
