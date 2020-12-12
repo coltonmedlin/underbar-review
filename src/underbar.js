@@ -360,6 +360,27 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    // create a storage obj
+    // create inner function
+    // check if the storage obj contains these arguments
+    // if it does, return the result
+    // if not, run the function
+
+    var usedArguments = {};
+    var result;
+
+    return function() {
+      var args = JSON.stringify(arguments);
+      if (usedArguments[args]) {
+        result = usedArguments[args];
+      } else {
+        result = func.apply(this, arguments);
+        usedArguments[args] = result;
+      }
+
+      return result;
+    };
+
   };
 
   // Delays a function for the given number of milliseconds, and then calls
