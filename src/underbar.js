@@ -64,7 +64,6 @@
         iterator(collection[key], key, collection);
       }
     }
-
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -438,6 +437,22 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    var results = [];
+    if (args !== undefined) {
+      collection = collection.concat(args);
+    }
+    if (typeof functionOrKey === 'string') {
+      _.each(collection, function(item) {
+        console.log(collection);
+        // i have no idea how to use a methodname to call that actual function... maybe eval() but looks like its unsecure? makes me insecure... come back later.
+        results.push(item[functionOrKey].apply(item));
+      });
+    } else {
+      _.each(collection, function(item) {
+        results.push(functionOrKey.apply(item));
+      });
+    }
+    return results;
   };
 
   // Sort the object's values by a criterion produced by an iterator.
@@ -445,6 +460,23 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
+    var results = [];
+    // debugger;
+    _.each(collection, function(item, index) {
+      if (index > 0) {
+        var prevEval = iterator(results[index - 1]);
+        var currEval = iterator(item);
+        if (currEval < prevEval) {
+          results.splice(results.length - 2, 0, item);
+          _.sortBy(results, iterator);
+        } else {
+          results.push(item);
+        }
+      } else {
+        results.push(item);
+      }
+    });
+    return results;
   };
 
   // Zip together two or more arrays with elements of the same index
