@@ -443,7 +443,6 @@
     }
     if (typeof functionOrKey === 'string') {
       _.each(collection, function(item) {
-        console.log(collection);
         // i have no idea how to use a methodname to call that actual function... maybe eval() but looks like its unsecure? makes me insecure... come back later.
         results.push(item[functionOrKey].apply(item));
       });
@@ -460,23 +459,37 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    var results = [];
-    // debugger;
     _.each(collection, function(item, index) {
-      if (index > 0) {
-        var prevEval = iterator(results[index - 1]);
-        var currEval = iterator(item);
-        if (currEval < prevEval) {
-          results.splice(results.length - 2, 0, item);
-          _.sortBy(results, iterator);
-        } else {
-          results.push(item);
-        }
-      } else {
-        results.push(item);
+      if (typeof item === 'string') {
+        collection.sort(function(a, b) {
+          return a[iterator] - b[iterator];
+        });
+        console.log(collection);
+      } else if (typeof item === 'number') {
+        collection.sort(function(a, b) {
+          return a - b;
+        });
+        console.log(collection);
+      } else if (typeof item === 'object') {
+        collection.sort(function(a, b) {
+          return iterator(a) - iterator(b);
+        });
+        console.log(collection);
       }
+      // if (index > 0) {
+      //   var prevEval = iterator(results[index - 1]);
+      //   var currEval = iterator(item);
+      //   if (currEval < prevEval) {
+      //     results.splice(results.length - 2, 0, item);
+      //     _.sortBy(results, iterator);
+      //   } else {
+      //     results.push(item);
+      //   }
+      // } else {
+      //   results.push(item);
+      // }
     });
-    return results;
+    return collection;
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -497,6 +510,41 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function() {
+    // inputs are arrays
+    // output will be an array with value found in all arrays
+    // low level plan:
+    // -iterate over the first array
+    // -compare current value with every other corresponding array's values
+    // -if current value is equal to a value found in the following arrays, push it into array accumulator
+    // - return array accumulator'
+    var result = [];
+
+    var i = arguments.length;
+
+    while (i > 0) {
+      i--;
+      var currentArr = arguments[i];
+      for (var j = 0; j < currentArr.length; j++) {
+        var currentTarget = currentArr[j];
+        var counter = 1;
+        for (var k = i + 1; k < arguments.length; k++) {
+          if (_.contains(arguments[k], currentTarget)) {
+            counter++;
+          }
+        }
+        if (counter === arguments.length) {
+          result.push(currentTarget);
+        }
+      }
+    }
+    return result;
+
+
+    // _.each(arguments, function(array) {
+    //   _.each(array, function(item) {});
+
+    // });
+
   };
 
   // Take the difference between one array and a number of other arrays.
