@@ -459,37 +459,88 @@
   // of that string. For example, _.sortBy(people, 'name') should sort
   // an array of people by their name.
   _.sortBy = function(collection, iterator) {
-    _.each(collection, function(item, index) {
-      if (typeof item === 'string') {
-        collection.sort(function(a, b) {
-          return a[iterator] - b[iterator];
-        });
-        console.log(collection);
-      } else if (typeof item === 'number') {
-        collection.sort(function(a, b) {
-          return a - b;
-        });
-        console.log(collection);
-      } else if (typeof item === 'object') {
-        collection.sort(function(a, b) {
-          return iterator(a) - iterator(b);
-        });
-        console.log(collection);
-      }
-      // if (index > 0) {
-      //   var prevEval = iterator(results[index - 1]);
-      //   var currEval = iterator(item);
-      //   if (currEval < prevEval) {
-      //     results.splice(results.length - 2, 0, item);
-      //     _.sortBy(results, iterator);
-      //   } else {
-      //     results.push(item);
-      //   }
-      // } else {
-      //   results.push(item);
-      // }
-    });
-    return collection;
+    var results = [];
+    var undefinedCount = 0;
+    if (typeof iterator === 'string') {
+      _.each(collection, function(item, index) {
+        if (index > 0) {
+          var prevItem = results[index - 1];
+          var prevEval = prevItem[iterator];
+          var currEval = item[iterator];
+          console.log(prevEval, currEval, undefinedCount);
+          if (currEval) {
+            if (prevEval) {
+              if (currEval < prevEval) {
+                results.splice(results.length - undefinedCount - 1, 0, item);
+                results = _.sortBy(results, iterator);
+              } else {
+                results.splice(results.length - undefinedCount, 0, item);
+              }
+            } else {
+              results.splice(results.length - undefinedCount - 2, 0, item);
+            }
+
+          } else {
+            undefinedCount++;
+            results.push(item);
+          }
+        } else {
+          if (item[iterator] === undefined) {
+            undefinedCount++;
+          }
+          results.push(item);
+        }
+        console.log(results);
+      });
+    } else {
+      _.each(collection, function(item, index) {
+
+        // if (typeof item === 'string') {
+        //   collection.sort(function(a, b) {
+        //     return a[iterator] - b[iterator];
+        //   });
+        // } else if (typeof item === 'number') {
+        //   collection.sort(function(a, b) {
+        //     return a - b;
+        //   });
+        // } else if (typeof item === 'object') {
+        //   collection.sort(function(a, b) {
+        //     return iterator(a) - iterator(b);
+        //   });
+        // }
+        // code from when I didn't know i could use Array.prototype.sort...
+        if (index > 0) {
+          var prevEval = iterator(results[index - 1 - undefinedCount]);
+          var currEval = iterator(item);
+          console.log(prevEval, currEval, undefinedCount);
+          if (currEval) {
+            if (prevEval) {
+              if (currEval < prevEval) {
+                results.splice(results.length - undefinedCount - 1, 0, item);
+                results = _.sortBy(results, iterator);
+              } else {
+                results.splice(results.length - undefinedCount, 0, item);
+              }
+            } else {
+              results.splice(results.length - undefinedCount - 2, 0, item);
+            }
+
+          } else {
+            undefinedCount++;
+            results.push(item);
+          }
+        } else {
+          if (iterator(item) === undefined) {
+            undefinedCount++;
+          }
+          results.push(item);
+        }
+        console.log(results);
+      });
+    }
+
+    // return collection; // when using Array.prototype.sort...
+    return results;
   };
 
   // Zip together two or more arrays with elements of the same index
@@ -498,6 +549,27 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function() {
+    var results = [];
+    // find the longest array in length given arguments
+    // create array at current index
+    // push array into results array
+    var longest = 0;
+
+    _.each(arguments, function(currArray) {
+      if (currArray.length > longest) {
+        longest = currArray.length;
+      }
+    });
+    var i = 0;
+    while (i < longest) {
+      var currIndexArray = [];
+      _.each(arguments, function(currArray) {
+        currIndexArray.push(currArray[i]);
+      });
+      results.push(currIndexArray);
+      i++;
+    }
+    return results;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -505,6 +577,22 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    var depth = 0;
+    if (result) {
+      if (Number(result)) {
+        depth = result;
+      } else {
+        depth = 1;
+      }
+    } else {
+      depth = Infinity;
+    }
+    var flatCount = 0;
+    var flatArr = [];
+    _.each(nestedArray, function(current) {
+
+
+    });
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
